@@ -72,11 +72,14 @@ class ModelCriteriaMapper implements DataMapperInterface
             if ($data->getTableMap()->hasRelation($relation)) {
                 $column = $eachForm->getPropertyPath()->getElement(1);
 
-                $data
-                    ->{'use'.$relation.'Query'}()
-                        ->filterBy($column, $eachForm->getData())
-                    ->endUse()
-                ;
+                /* @var $useQuery \ModelCriteria */
+                $useQuery = $data->{'use'.$relation.'Query'}();
+                if (method_exists($useQuery, 'filterBy'.$column)) {
+                    call_user_func(array($useQuery, 'filterBy'.$column), $eachForm->getData());
+                } else {
+                    $useQuery->filterBy($column, $eachForm->getData());
+                }
+                $useQuery->endUse();
 
                 continue;
             }
