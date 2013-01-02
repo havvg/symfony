@@ -2,11 +2,13 @@
 
 namespace Symfony\Bridge\Propel1\Form\DataMapper;
 
+use Criteria;
 use ModelCriteria;
 
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\Form\Util\PropertyPath;
 
 /**
  * A DataMapper mapping a ModelCriteria to a form type.
@@ -25,14 +27,72 @@ class ModelCriteriaMapper implements DataMapperInterface
             throw new UnexpectedTypeException($data, 'ModelCriteria');
         }
 
-        /*
-         * @todo Implement mapDataToForms to actually map current Criteria to the forms.
-         *       The idea is to map the value and comparison to each form.
-         *       A DataTransformer attached to the form will then transform this data into the view data of the form.
-         *       E.g. a simple flag (boolean) of the model will be transformed to a choice containing both + "ignore" value.
+        /**
+         * The list of applied criterions.
          *
-         *       **Important** For now the form has to be configured correctly to actually work the way it's expected!
+         * The keys are translated to the phpName of the columns, which are used as property path values on the form.
+         *
+         * @var $filters \Criterion[]
          */
+        $filters = array();
+
+        /* @var $eachCriterion \Criterion */
+        foreach ($data->getMap() as $eachTableColumn => $eachCriterion) {
+            $path = new PropertyPath($eachTableColumn);
+
+            /*
+             * In case this is a related model. Currently not supporting many-to-many relations!
+             *
+             * @todo Implement path finding of many-to-many relations.
+             *       This allows the use of X on the query for model Y, where Y and X are in a many-to-many relationship.
+             *       While using the "filterByX" method of the query, the cross-table is defined in the Criterion, not the table of X.
+             */
+            if ($path->getElement(0) !== $data->getTableMap()->getName()) {
+                /*
+                 * The camelize is "default" behavior, but the actual phpName may vary.
+                 *
+                 * @todo Implement discovery of actual phpName by checking all relations on this model.
+                 *       Remove self::camelize upon implementation.
+                 */
+                $relationName = ucfirst(str_replace(" ", "", ucwords(strtr($path->getElement(0), "_-", "  "))));
+                if (!$data->getTableMap()->hasRelation($relationName)) {
+                    continue;
+                }
+
+                $peer = $data->getTableMap()->getRelation($relationName)->getLocalTable()->getPeerClassname();
+                $key = $relationName.'.'.$this->translateFieldname($peer, $path->getElement(1));
+            } else {
+                $key = $this->translateFieldname($data->getModelPeerName(), $path->getElement(1));
+            }
+
+            $filters[$key] = $eachCriterion;
+        }
+
+        /* @var $eachForm FormInterface */
+        foreach ($forms as $eachForm) {
+            // Skip those we don't want!
+            //    no path                                            mapped => false
+            if (!$eachForm->getPropertyPath()->getLength() || !$eachForm->getConfig()->getMapped()) {
+                continue;
+            }
+
+            $propertyPath = (string) $eachForm->getPropertyPath();
+            if (empty($filters[$propertyPath])) {
+                continue;
+            }
+
+            $criterion = $filters[$propertyPath];
+            switch ($criterion->getComparison()) {
+                /*
+                 * This simply sets the value of the Criterion as value of the form.
+                 *
+                 * @todo Implement data setter based on comparison defined in the Criterion.
+                 */
+                case Criteria::EQUAL:
+                default:
+                    $eachForm->setData($criterion->getValue());
+            }
+        }
     }
 
     public function mapFormsToData(array $forms, &$data)
@@ -45,7 +105,7 @@ class ModelCriteriaMapper implements DataMapperInterface
             throw new UnexpectedTypeException($data, 'ModelCriteria');
         }
 
-        /* @var $eachForm \Symfony\Component\Form\FormInterface */
+        /* @var $eachForm FormInterface */
         foreach ($forms as $eachForm) {
             // Skip those, we don't want!
             //    no path                                            mapped => false                     DataTransformer failed          disabled => true           no actual data
@@ -97,5 +157,18 @@ class ModelCriteriaMapper implements DataMapperInterface
         $useQuery = $query->{'use'.$relation.'Query'}();
         $this->usePath($form, $useQuery, ++$index);
         $useQuery->endUse();
+    }
+
+    /**
+     * Translate the fields name from "fieldName" to "phpName".
+     *
+     * @param string $peer  The FQCN of the peer class to translate the fieldName with.
+     * @param string $field The name of the field to translate.
+     *
+     * @return string
+     */
+    protected function translateFieldname($peer, $field)
+    {
+        return call_user_func_array(array($peer, 'translateFieldName'), array($field, \BasePeer::TYPE_FIELDNAME, \BasePeer::TYPE_PHPNAME));
     }
 }
