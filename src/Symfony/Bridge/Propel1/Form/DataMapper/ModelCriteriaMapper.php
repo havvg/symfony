@@ -2,8 +2,11 @@
 
 namespace Symfony\Bridge\Propel1\Form\DataMapper;
 
+use ModelCriteria;
+
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * A DataMapper mapping a ModelCriteria to a form type.
@@ -18,8 +21,8 @@ class ModelCriteriaMapper implements DataMapperInterface
             return;
         }
 
-        if (!$data instanceof \ModelCriteria) {
-            throw new UnexpectedTypeException($data, '\ModelCriteria');
+        if (!$data instanceof ModelCriteria) {
+            throw new UnexpectedTypeException($data, 'ModelCriteria');
         }
 
         /*
@@ -38,53 +41,61 @@ class ModelCriteriaMapper implements DataMapperInterface
             return;
         }
 
-        if (!$data instanceof \ModelCriteria) {
-            throw new UnexpectedTypeException($data, '\ModelCriteria');
+        if (!$data instanceof ModelCriteria) {
+            throw new UnexpectedTypeException($data, 'ModelCriteria');
         }
 
         /* @var $eachForm \Symfony\Component\Form\FormInterface */
         foreach ($forms as $eachForm) {
-            // The string is a dot-path respresentation.
-            $propertyPath = (string) $eachForm->getPropertyPath();
-
             // Skip those, we don't want!
-            //    no path               mapped => false                     DataTransformer failed          disabled => true           no actual data
-            if (!$propertyPath || !$eachForm->getConfig()->getMapped() || !$eachForm->isSynchronized() || $eachForm->isDisabled() || $eachForm->isEmpty()) {
+            //    no path                                            mapped => false                     DataTransformer failed          disabled => true           no actual data
+            if (!$eachForm->getPropertyPath()->getLength() || !$eachForm->getConfig()->getMapped() || !$eachForm->isSynchronized() || $eachForm->isDisabled() || $eachForm->isEmpty()) {
                 continue;
             }
+
+            $this->usePath($eachForm, $data);
+        }
+    }
+
+    /**
+     * Recursively traverse the property path and chain the relations.
+     *
+     * In case the property-path contains more than one item, it's a dot-path notation of the related models.
+     * The path will be traversed and the uses applied to the respective relation in the path.
+     *
+     * @param FormInterface $form  The filter form containing the property path and the data.
+     * @param ModelCriteria $query The query object to join the property path onto.
+     * @param int           $index The index of the property path being traversed.
+     *
+     * @throws \RuntimeException If the relation path is invalid.
+     */
+    protected function usePath(FormInterface $form, ModelCriteria $query, $index = 0)
+    {
+        // The last property has been reached, which is the column.
+        if ($index === $form->getPropertyPath()->getLength() - 1) {
+            $column = $form->getPropertyPath()->getElement($index);
 
             /*
              * This allows to use custom implementations for e.g. "virtual" columns.
              * It will also leverage generated methods in the base classes of the Query API.
              */
-            if (method_exists($data, 'filterBy'.$propertyPath)) {
-                call_user_func(array($data, 'filterBy'.$propertyPath), $eachForm->getData());
-
-                continue;
+            if (method_exists($query, 'filterBy'.$column)) {
+                call_user_func(array($query, 'filterBy'.$column), $form->getData());
+            } else {
+                $query->filterBy($column, $form->getData());
             }
 
-            /*
-             * Check whether the property_path contains a relation for the current model.
-             *
-             * @todo Handle deeper relation paths.
-             */
-            $relation = $eachForm->getPropertyPath()->getElement(0);
-            if ($data->getTableMap()->hasRelation($relation)) {
-                $column = $eachForm->getPropertyPath()->getElement(1);
-
-                /* @var $useQuery \ModelCriteria */
-                $useQuery = $data->{'use'.$relation.'Query'}();
-                if (method_exists($useQuery, 'filterBy'.$column)) {
-                    call_user_func(array($useQuery, 'filterBy'.$column), $eachForm->getData());
-                } else {
-                    $useQuery->filterBy($column, $eachForm->getData());
-                }
-                $useQuery->endUse();
-
-                continue;
-            }
-
-            $data->filterBy($propertyPath, $eachForm->getData());
+            return;
         }
+
+        $relation = $form->getPropertyPath()->getElement($index);
+        if (!$query->getTableMap()->hasRelation($relation)) {
+            throw new \RuntimeException(sprintf('The relation between %s and %s does not exist.', $query->getModelName(), $relation));
+        }
+
+        /* @var $useQuery ModelCriteria */
+        $useQuery = $query->{'use'.$relation.'Query'}();
+        $this->usePath($form, $useQuery, ++$index);
+        $useQuery->endUse();
     }
 }
