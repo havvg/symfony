@@ -15,14 +15,14 @@ use Symfony\Component\HttpKernel\DependencyInjection\MergeExtensionConfiguration
 
 class MergeExtensionConfigurationPassTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\DependencyInjection\Container')) {
-            $this->markTestSkipped('The "DependencyInjection" component is not available');
+            self::markTestSkipped('The "DependencyInjection" component is not available');
         }
 
         if (!class_exists('Symfony\Component\Config\FileLocator')) {
-            $this->markTestSkipped('The "Config" component is not available');
+            self::markTestSkipped('The "Config" component is not available');
         }
     }
 

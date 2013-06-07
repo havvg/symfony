@@ -17,18 +17,18 @@ use Doctrine\ORM\EntityManager;
 
 abstract class DoctrineOrmTestCase extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Doctrine\Common\Version')) {
-            $this->markTestSkipped('Doctrine Common is not available.');
+            self::markTestSkipped('Doctrine Common is not available.');
         }
 
         if (!class_exists('Doctrine\DBAL\Platforms\MySqlPlatform')) {
-            $this->markTestSkipped('Doctrine DBAL is not available.');
+            self::markTestSkipped('Doctrine DBAL is not available.');
         }
 
         if (!class_exists('Doctrine\ORM\EntityManager')) {
-            $this->markTestSkipped('Doctrine ORM is not available.');
+            self::markTestSkipped('Doctrine ORM is not available.');
         }
     }
 
@@ -40,6 +40,7 @@ abstract class DoctrineOrmTestCase extends \PHPUnit_Framework_TestCase
         if (!class_exists('PDO') || !in_array('sqlite', \PDO::getAvailableDrivers())) {
             self::markTestSkipped('This test requires SQLite support in your environment');
         }
+
         $config = new \Doctrine\ORM\Configuration();
         $config->setEntityNamespaces(array('SymfonyTestsDoctrine' => 'Symfony\Bridge\Doctrine\Tests\Fixtures'));
         $config->setAutoGenerateProxyClasses(true);

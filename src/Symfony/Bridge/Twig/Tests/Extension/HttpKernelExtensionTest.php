@@ -18,16 +18,16 @@ use Symfony\Component\HttpKernel\Fragment\FragmentHandler;
 
 class HttpKernelExtensionTest extends TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
+        parent::setUpBeforeClass();
 
         if (!class_exists('Symfony\Component\HttpKernel\HttpKernel')) {
-            $this->markTestSkipped('The "HttpKernel" component is not available');
+            self::markTestSkipped('The "HttpKernel" component is not available');
         }
 
         if (!class_exists('Twig_Environment')) {
-            $this->markTestSkipped('Twig is not available.');
+            self::markTestSkipped('Twig is not available.');
         }
     }
 

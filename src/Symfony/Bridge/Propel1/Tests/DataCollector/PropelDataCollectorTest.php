@@ -18,10 +18,12 @@ use Symfony\Bridge\Propel1\Tests\Propel1TestCase;
 
 class PropelDataCollectorTest extends Propel1TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
+        parent::setUpBeforeClass();
+
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
     }
 

@@ -31,6 +31,17 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected $con;
 
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists('Doctrine\DBAL\DriverManager')) {
+            self::markTestSkipped('The Doctrine2 DBAL is required for this test');
+        }
+
+        if (!class_exists('PDO') || !in_array('sqlite', \PDO::getAvailableDrivers())) {
+            self::markTestSkipped('This test requires SQLite support in your environment');
+        }
+    }
+
     public static function assertAceEquals(EntryInterface $a, EntryInterface $b)
     {
         self::assertInstanceOf(get_class($a), $b);
@@ -429,13 +440,6 @@ class MutableAclProviderTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        if (!class_exists('Doctrine\DBAL\DriverManager')) {
-            $this->markTestSkipped('The Doctrine2 DBAL is required for this test');
-        }
-        if (!class_exists('PDO') || !in_array('sqlite', \PDO::getAvailableDrivers())) {
-            self::markTestSkipped('This test requires SQLite support in your environment');
-        }
-
         $this->con = DriverManager::getConnection(array(
             'driver' => 'pdo_sqlite',
             'memory' => true,

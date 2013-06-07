@@ -16,10 +16,10 @@ use Symfony\Component\Form\Extension\Core\EventListener\FixUrlProtocolListener;
 
 class FixUrlProtocolListenerTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
     }
 

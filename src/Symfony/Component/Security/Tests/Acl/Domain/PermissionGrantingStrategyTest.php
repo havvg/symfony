@@ -20,6 +20,13 @@ use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
 
 class PermissionGrantingStrategyTest extends \PHPUnit_Framework_TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists('Doctrine\DBAL\DriverManager')) {
+            self::markTestSkipped('The Doctrine2 DBAL is required for this test');
+        }
+    }
+
     public function testIsGrantedObjectAcesHavePriority()
     {
         $strategy = new PermissionGrantingStrategy();
@@ -181,12 +188,5 @@ class PermissionGrantingStrategyTest extends \PHPUnit_Framework_TestCase
         static $id = 1;
 
         return new Acl($id++, new ObjectIdentity(1, 'Foo'), $strategy, array(), true);
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Doctrine\DBAL\DriverManager')) {
-            $this->markTestSkipped('The Doctrine2 DBAL is required for this test');
-        }
     }
 }

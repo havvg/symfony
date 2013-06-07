@@ -21,12 +21,15 @@ class UserPasswordValidatorTest extends \PHPUnit_Framework_TestCase
 
     protected $context;
 
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists('Symfony\Component\Validator\Validator')) {
+            self::markTestSkipped('The Validator component is required for this test.');
+        }
+    }
+
     protected function setUp()
     {
-        if (false === class_exists('Symfony\Component\Validator\Validator')) {
-            $this->markTestSkipped('The Validator component is required for this test.');
-        }
-
         $this->context = $this->getMock('Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
     }
 

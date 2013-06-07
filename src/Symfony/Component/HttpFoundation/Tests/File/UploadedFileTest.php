@@ -15,10 +15,10 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UploadedFileTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!ini_get('file_uploads')) {
-            $this->markTestSkipped('file_uploads is disabled in php.ini');
+            self::markTestSkipped('file_uploads is disabled in php.ini');
         }
     }
 

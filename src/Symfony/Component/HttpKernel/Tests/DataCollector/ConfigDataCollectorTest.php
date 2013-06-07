@@ -19,10 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ConfigDataCollectorTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
     }
 

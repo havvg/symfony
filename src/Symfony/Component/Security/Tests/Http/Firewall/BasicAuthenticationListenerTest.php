@@ -19,18 +19,18 @@ use Symfony\Component\Security\Core\Authentication\AuthenticationProviderManager
 
 class BasicAuthenticationListenerTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
 
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
 
         if (!class_exists('Symfony\Component\HttpKernel\HttpKernel')) {
-            $this->markTestSkipped('The "HttpKernel" component is not available');
+            self::markTestSkipped('The "HttpKernel" component is not available');
         }
     }
 

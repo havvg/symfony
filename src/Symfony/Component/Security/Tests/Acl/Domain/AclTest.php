@@ -20,6 +20,13 @@ use Symfony\Component\Security\Acl\Domain\Acl;
 
 class AclTest extends \PHPUnit_Framework_TestCase
 {
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists('Doctrine\DBAL\DriverManager')) {
+            self::markTestSkipped('The Doctrine2 DBAL is required for this test');
+        }
+    }
+
     public function testConstructor()
     {
         $acl = new Acl(1, $oid = new ObjectIdentity('foo', 'foo'), $permissionStrategy = new PermissionGrantingStrategy(), array(), true);
@@ -510,12 +517,5 @@ class AclTest extends \PHPUnit_Framework_TestCase
     protected function getAcl()
     {
         return new Acl(1, new ObjectIdentity(1, 'foo'), new PermissionGrantingStrategy(), array(), true);
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Doctrine\DBAL\DriverManager')) {
-            $this->markTestSkipped('The Doctrine2 DBAL is required for this test');
-        }
     }
 }

@@ -25,12 +25,15 @@ class MongoDbSessionHandlerTest extends \PHPUnit_Framework_TestCase
     private $storage;
     public $options;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!extension_loaded('mongo')) {
-            $this->markTestSkipped('MongoDbSessionHandler requires the PHP "mongo" extension.');
+            self::markTestSkipped('MongoDbSessionHandler requires the PHP "mongo" extension.');
         }
+    }
 
+    protected function setUp()
+    {
         $mongoClass = (version_compare(phpversion('mongo'), '1.3.0', '<')) ? 'Mongo' : 'MongoClient';
 
         $this->mongo = $this->getMockBuilder($mongoClass)

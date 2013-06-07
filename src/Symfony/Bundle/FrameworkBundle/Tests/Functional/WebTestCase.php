@@ -23,13 +23,13 @@ class WebTestCase extends BaseWebTestCase
         self::assertEquals('http://localhost'.$location, $response->headers->get('Location'));
     }
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Twig_Environment')) {
-            $this->markTestSkipped('Twig is not available.');
+            self::markTestSkipped('Twig is not available.');
         }
 
-        parent::setUp();
+        parent::setUpBeforeClass();
     }
 
     protected function deleteTmpDir($testCase)

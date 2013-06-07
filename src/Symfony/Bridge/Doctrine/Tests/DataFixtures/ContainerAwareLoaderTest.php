@@ -16,14 +16,14 @@ use Symfony\Bridge\Doctrine\Tests\Fixtures\ContainerAwareFixture;
 
 class ContainerAwareLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\DependencyInjection\Container')) {
-            $this->markTestSkipped('The "DependencyInjection" component is not available');
+            self::markTestSkipped('The "DependencyInjection" component is not available');
         }
 
         if (!class_exists('Doctrine\Common\DataFixtures\Loader')) {
-            $this->markTestSkipped('Doctrine Data Fixtures is not available.');
+            self::markTestSkipped('Doctrine Data Fixtures is not available.');
         }
     }
 

@@ -22,10 +22,10 @@ use Symfony\Component\HttpKernel\Tests\Fixtures\TestClient;
 
 class ClientTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\BrowserKit\Client')) {
-            $this->markTestSkipped('The "BrowserKit" component is not available');
+            self::markTestSkipped('The "BrowserKit" component is not available');
         }
     }
 

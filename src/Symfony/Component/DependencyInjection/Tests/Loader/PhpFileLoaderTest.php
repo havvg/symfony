@@ -18,10 +18,10 @@ use Symfony\Component\Config\FileLocator;
 
 class PhpFileLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\Config\Loader\Loader')) {
-            $this->markTestSkipped('The "Config" component is not available');
+            self::markTestSkipped('The "Config" component is not available');
         }
     }
 

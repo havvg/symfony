@@ -18,14 +18,14 @@ use Symfony\Component\HttpFoundation\Response;
 
 class DoctrineDataCollectorTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Doctrine\DBAL\Platforms\MySqlPlatform')) {
-            $this->markTestSkipped('Doctrine DBAL is not available.');
+            self::markTestSkipped('Doctrine DBAL is not available.');
         }
 
         if (!class_exists('Symfony\Component\HttpKernel\HttpKernel')) {
-            $this->markTestSkipped('The "HttpKernel" component is not available');
+            self::markTestSkipped('The "HttpKernel" component is not available');
         }
     }
 

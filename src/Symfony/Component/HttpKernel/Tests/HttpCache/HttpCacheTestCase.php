@@ -29,12 +29,15 @@ class HttpCacheTestCase extends \PHPUnit_Framework_TestCase
     protected $catch;
     protected $esi;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->kernel = null;
 
         $this->cache = null;

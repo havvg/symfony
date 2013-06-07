@@ -21,12 +21,15 @@ class StoreTest extends \PHPUnit_Framework_TestCase
     protected $response;
     protected $store;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->request = Request::create('/');
         $this->response = new Response('hello world', 200, array());
 

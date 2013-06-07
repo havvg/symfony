@@ -51,12 +51,15 @@ class FormFactoryTest extends \PHPUnit_Framework_TestCase
      */
     private $factory;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->resolvedTypeFactory = $this->getMock('Symfony\Component\Form\ResolvedFormTypeFactoryInterface');
         $this->guesser1 = $this->getMock('Symfony\Component\Form\FormTypeGuesserInterface');
         $this->guesser2 = $this->getMock('Symfony\Component\Form\FormTypeGuesserInterface');

@@ -19,16 +19,16 @@ use Symfony\Bridge\Twig\Tests\TestCase;
 
 class TranslationExtensionTest extends TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
+        parent::setUpBeforeClass();
 
         if (!class_exists('Symfony\Component\Translation\Translator')) {
-            $this->markTestSkipped('The "Translation" component is not available');
+            self::markTestSkipped('The "Translation" component is not available');
         }
 
         if (!class_exists('Twig_Environment')) {
-            $this->markTestSkipped('Twig is not available.');
+            self::markTestSkipped('Twig is not available.');
         }
     }
 

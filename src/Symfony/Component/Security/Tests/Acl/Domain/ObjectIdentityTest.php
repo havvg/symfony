@@ -15,6 +15,13 @@ namespace Symfony\Component\Security\Tests\Acl\Domain
 
     class ObjectIdentityTest extends \PHPUnit_Framework_TestCase
     {
+        public static function setUpBeforeClass()
+        {
+            if (!class_exists('Doctrine\DBAL\DriverManager')) {
+                self::markTestSkipped('The Doctrine2 DBAL is required for this test');
+            }
+        }
+
         public function testConstructor()
         {
             $id = new ObjectIdentity('fooid', 'footype');
@@ -84,13 +91,6 @@ namespace Symfony\Component\Security\Tests\Acl\Domain
                 array(new ObjectIdentity('1', 'foo'), new ObjectIdentity('2', 'foo'), false),
                 array(new ObjectIdentity('1', 'bla'), new ObjectIdentity('1', 'blub'), false),
             );
-        }
-
-        protected function setUp()
-        {
-            if (!class_exists('Doctrine\DBAL\DriverManager')) {
-                $this->markTestSkipped('The Doctrine2 DBAL is required for this test');
-            }
         }
     }
 

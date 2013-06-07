@@ -18,10 +18,10 @@ use Symfony\Component\Security\Http\Logout\CookieClearingLogoutHandler;
 
 class CookieClearingLogoutHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
     }
 

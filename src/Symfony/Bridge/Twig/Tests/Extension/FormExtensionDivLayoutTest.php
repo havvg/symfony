@@ -28,24 +28,29 @@ class FormExtensionDivLayoutTest extends AbstractDivLayoutTest
      */
     protected $extension;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
+        parent::setUpBeforeClass();
+
         if (!class_exists('Symfony\Component\Locale\Locale')) {
-            $this->markTestSkipped('The "Locale" component is not available');
+            self::markTestSkipped('The "Locale" component is not available');
         }
 
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
 
         if (!class_exists('Symfony\Component\Form\Form')) {
-            $this->markTestSkipped('The "Form" component is not available');
+            self::markTestSkipped('The "Form" component is not available');
         }
 
         if (!class_exists('Twig_Environment')) {
-            $this->markTestSkipped('Twig is not available.');
+            self::markTestSkipped('Twig is not available.');
         }
+    }
 
+    protected function setUp()
+    {
         parent::setUp();
 
         $rendererEngine = new TwigRendererEngine(array(

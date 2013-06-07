@@ -32,12 +32,15 @@ abstract class AbstractFormTest extends \PHPUnit_Framework_TestCase
      */
     protected $form;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         // We need an actual dispatcher to use the deprecated
         // bindRequest() method
         $this->dispatcher = new EventDispatcher();

@@ -16,10 +16,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class RegisterEventListenersAndSubscribersPassTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\DependencyInjection\Container')) {
-            $this->markTestSkipped('The "DependencyInjection" component is not available');
+            self::markTestSkipped('The "DependencyInjection" component is not available');
         }
     }
 

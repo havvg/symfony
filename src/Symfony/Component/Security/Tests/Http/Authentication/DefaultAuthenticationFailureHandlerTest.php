@@ -29,20 +29,23 @@ class DefaultAuthenticationFailureHandlerTest extends \PHPUnit_Framework_TestCas
 
     private $exception = null;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpKernel\HttpKernel')) {
-            $this->markTestSkipped('The "HttpKernel" component is not available');
+            self::markTestSkipped('The "HttpKernel" component is not available');
         }
 
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
 
         if (!interface_exists('Psr\Log\LoggerInterface')) {
-            $this->markTestSkipped('The "LoggerInterface" is not available');
+            self::markTestSkipped('The "LoggerInterface" is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->httpKernel = $this->getMock('Symfony\Component\HttpKernel\HttpKernelInterface');
         $this->httpUtils = $this->getMock('Symfony\Component\Security\Http\HttpUtils');
         $this->logger = $this->getMock('Psr\Log\LoggerInterface');

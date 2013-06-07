@@ -19,12 +19,17 @@ class CollectionToArrayTransformerTest extends Propel1TestCase
 {
     private $transformer;
 
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        if (!class_exists('Symfony\Component\Form\Form')) {
+            self::markTestSkipped('The "Form" component is not available');
+        }
+    }
+
     protected function setUp()
     {
-        if (!class_exists('Symfony\Component\Form\Form')) {
-            $this->markTestSkipped('The "Form" component is not available');
-        }
-
         parent::setUp();
 
         $this->transformer = new CollectionToArrayTransformer();

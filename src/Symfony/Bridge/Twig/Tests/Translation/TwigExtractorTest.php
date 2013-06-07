@@ -18,10 +18,12 @@ use Symfony\Bridge\Twig\Tests\TestCase;
 
 class TwigExtractorTest extends TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
+        parent::setUpBeforeClass();
+
         if (!class_exists('Symfony\Component\Translation\Translator')) {
-            $this->markTestSkipped('The "Translation" component is not available');
+            self::markTestSkipped('The "Translation" component is not available');
         }
     }
 

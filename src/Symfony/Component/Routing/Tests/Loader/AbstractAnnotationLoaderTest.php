@@ -13,10 +13,10 @@ namespace Symfony\Component\Routing\Tests\Loader;
 
 abstract class AbstractAnnotationLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Doctrine\\Common\\Version')) {
-            $this->markTestSkipped('Doctrine is not available.');
+            self::markTestSkipped('Doctrine is not available.');
         }
     }
 

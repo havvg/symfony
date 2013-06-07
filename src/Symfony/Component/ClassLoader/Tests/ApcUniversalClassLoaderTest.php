@@ -15,17 +15,20 @@ use Symfony\Component\ClassLoader\ApcUniversalClassLoader;
 
 class ApcUniversalClassLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!extension_loaded('apc')) {
-            $this->markTestSkipped('The apc extension is not available.');
+            self::markTestSkipped('The apc extension is not available.');
         }
 
         if (!(ini_get('apc.enabled') && ini_get('apc.enable_cli'))) {
-            $this->markTestSkipped('The apc extension is available, but not enabled.');
-        } else {
-            apc_clear_cache('user');
+            self::markTestSkipped('The apc extension is available, but not enabled.');
         }
+    }
+
+    protected function setUp()
+    {
+        apc_clear_cache('user');
     }
 
     protected function tearDown()

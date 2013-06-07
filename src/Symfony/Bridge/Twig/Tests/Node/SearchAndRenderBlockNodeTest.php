@@ -16,12 +16,12 @@ use Symfony\Bridge\Twig\Node\SearchAndRenderBlockNode;
 
 class SearchAndRenderBlockNodeTest extends TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
+        parent::setUpBeforeClass();
 
         if (version_compare(\Twig_Environment::VERSION, '1.5.0', '<')) {
-            $this->markTestSkipped('Requires Twig version to be at least 1.5.0.');
+            self::markTestSkipped('Requires Twig version to be at least 1.5.0.');
         }
     }
 

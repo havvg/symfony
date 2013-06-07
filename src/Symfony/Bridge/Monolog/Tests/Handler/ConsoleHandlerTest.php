@@ -22,10 +22,10 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Monolog\\Logger')) {
-            $this->markTestSkipped('Monolog is not available.');
+            self::markTestSkipped('Monolog is not available.');
         }
     }
 

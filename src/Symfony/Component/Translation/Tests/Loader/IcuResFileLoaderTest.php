@@ -16,14 +16,12 @@ use Symfony\Component\Config\Resource\DirectoryResource;
 
 class IcuResFileLoaderTest extends LocalizedTestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        if (!class_exists('Symfony\Component\Config\Loader\Loader')) {
-            $this->markTestSkipped('The "Config" component is not available');
-        }
+        parent::setUpBeforeClass();
 
-        if (!extension_loaded('intl')) {
-            $this->markTestSkipped('This test requires intl extension to work.');
+        if (!class_exists('Symfony\Component\Config\Loader\Loader')) {
+            self::markTestSkipped('The "Config" component is not available');
         }
     }
 

@@ -21,12 +21,15 @@ class FormBuilderTest extends \PHPUnit_Framework_TestCase
 
     private $builder;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->dispatcher = $this->getMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->factory = $this->getMock('Symfony\Component\Form\FormFactoryInterface');
         $this->builder = new FormBuilder('name', null, $this->dispatcher, $this->factory);

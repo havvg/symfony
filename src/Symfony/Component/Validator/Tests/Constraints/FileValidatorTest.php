@@ -22,12 +22,15 @@ abstract class FileValidatorTest extends \PHPUnit_Framework_TestCase
     protected $path;
     protected $file;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\File\UploadedFile')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->context = $this->getMock('Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
         $this->validator = new FileValidator();
         $this->validator->initialize($this->context);

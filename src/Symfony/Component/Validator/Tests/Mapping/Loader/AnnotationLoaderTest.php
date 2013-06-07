@@ -23,10 +23,10 @@ use Symfony\Component\Validator\Tests\Fixtures\ConstraintA;
 
 class AnnotationLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Doctrine\Common\Annotations\AnnotationReader')) {
-            $this->markTestSkipped('The "Doctrine Common" library is not available');
+            self::markTestSkipped('The "Doctrine Common" library is not available');
         }
     }
 

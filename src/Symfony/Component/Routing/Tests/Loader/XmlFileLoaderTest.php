@@ -17,10 +17,10 @@ use Symfony\Component\Routing\Tests\Fixtures\CustomXmlFileLoader;
 
 class XmlFileLoaderTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\Config\FileLocator')) {
-            $this->markTestSkipped('The "Config" component is not available');
+            self::markTestSkipped('The "Config" component is not available');
         }
     }
 

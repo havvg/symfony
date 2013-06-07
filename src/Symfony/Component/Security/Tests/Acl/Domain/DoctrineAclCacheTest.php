@@ -22,6 +22,13 @@ class DoctrineAclCacheTest extends \PHPUnit_Framework_TestCase
 {
     protected $permissionGrantingStrategy;
 
+    public static function setUpBeforeClass()
+    {
+        if (!class_exists('Doctrine\DBAL\DriverManager')) {
+            self::markTestSkipped('The Doctrine2 DBAL is required for this test');
+        }
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      * @dataProvider getEmptyValue
@@ -97,12 +104,5 @@ class DoctrineAclCacheTest extends \PHPUnit_Framework_TestCase
         }
 
         return new DoctrineAclCache($cacheDriver, $this->getPermissionGrantingStrategy(), $prefix);
-    }
-
-    protected function setUp()
-    {
-        if (!class_exists('Doctrine\DBAL\DriverManager')) {
-            $this->markTestSkipped('The Doctrine2 DBAL is required for this test');
-        }
     }
 }

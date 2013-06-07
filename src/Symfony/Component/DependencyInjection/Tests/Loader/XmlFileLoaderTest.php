@@ -27,15 +27,12 @@ class XmlFileLoaderTest extends \PHPUnit_Framework_TestCase
 {
     protected static $fixturesPath;
 
-    protected function setUp()
-    {
-        if (!class_exists('Symfony\Component\Config\Loader\Loader')) {
-            $this->markTestSkipped('The "Config" component is not available');
-        }
-    }
-
     public static function setUpBeforeClass()
     {
+        if (!class_exists('Symfony\Component\Config\Loader\Loader')) {
+            self::markTestSkipped('The "Config" component is not available');
+        }
+
         self::$fixturesPath = realpath(__DIR__.'/../Fixtures/');
         require_once self::$fixturesPath.'/includes/foo.php';
         require_once self::$fixturesPath.'/includes/ProjectExtension.php';

@@ -26,16 +26,16 @@ use Doctrine\ORM\Tools\SchemaTool;
 
 class UniqueValidatorTest extends DoctrineOrmTestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
-        parent::setUp();
+        parent::setUpBeforeClass();
 
         if (!class_exists('Symfony\Component\Security\Core\SecurityContext')) {
-            $this->markTestSkipped('The "Security" component is not available');
+            self::markTestSkipped('The "Security" component is not available');
         }
 
         if (!class_exists('Symfony\Component\Validator\Constraint')) {
-            $this->markTestSkipped('The "Validator" component is not available');
+            self::markTestSkipped('The "Validator" component is not available');
         }
     }
 

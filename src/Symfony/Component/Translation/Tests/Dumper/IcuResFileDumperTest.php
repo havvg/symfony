@@ -16,12 +16,15 @@ use Symfony\Component\Translation\Dumper\IcuResFileDumper;
 
 class IcuResFileDumperTest extends \PHPUnit_Framework_TestCase
 {
-    public function testDump()
+    public static function setUpBeforeClass()
     {
         if (!extension_loaded('mbstring')) {
-            $this->markTestSkipped('This test requires mbstring to work.');
+            self::markTestSkipped('This test requires mbstring to work.');
         }
+    }
 
+    public function testDump()
+    {
         $catalogue = new MessageCatalogue('en');
         $catalogue->add(array('foo' => 'bar'));
 

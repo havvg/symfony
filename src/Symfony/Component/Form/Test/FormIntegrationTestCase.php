@@ -23,12 +23,15 @@ abstract class FormIntegrationTestCase extends \PHPUnit_Framework_TestCase
      */
     protected $factory;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\EventDispatcher\EventDispatcher')) {
-            $this->markTestSkipped('The "EventDispatcher" component is not available');
+            self::markTestSkipped('The "EventDispatcher" component is not available');
         }
+    }
 
+    protected function setUp()
+    {
         $this->factory = Forms::createFormFactoryBuilder()
             ->addExtensions($this->getExtensions())
             ->getFormFactory();

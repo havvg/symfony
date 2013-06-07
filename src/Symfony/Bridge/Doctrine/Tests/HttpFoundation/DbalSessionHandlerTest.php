@@ -20,11 +20,13 @@ use Symfony\Bridge\Doctrine\HttpFoundation\DbalSessionHandler;
  */
 class DbalSessionHandlerTest extends \PHPUnit_Framework_TestCase
 {
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Symfony\Component\HttpFoundation\Request')) {
-            $this->markTestSkipped('The "HttpFoundation" component is not available');
+            self::markTestSkipped('The "HttpFoundation" component is not available');
         }
+
+        parent::setUpBeforeClass();
     }
 
     public function testConstruct()

@@ -30,12 +30,15 @@ class AclProviderBenchmarkTest extends \PHPUnit_Framework_TestCase
     protected $insertOidStmt;
     protected $insertEntryStmt;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!class_exists('Doctrine\DBAL\DriverManager')) {
-            $this->markTestSkipped('The "Doctrine DBAL" library is not available');
+            self::markTestSkipped('The "Doctrine DBAL" library is not available');
         }
+    }
 
+    protected function setUp()
+    {
         try {
             $this->con = DriverManager::getConnection(array(
                 'driver' => 'pdo_mysql',

@@ -29,17 +29,17 @@ class FormHelperTableLayoutTest extends AbstractTableLayoutTest
      */
     protected $engine;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
+        parent::setUpBeforeClass();
+
         if (!class_exists('Symfony\Bundle\FrameworkBundle\Templating\Helper\TranslatorHelper')) {
-            $this->markTestSkipped('The "FrameworkBundle" is not available');
+            self::markTestSkipped('The "FrameworkBundle" is not available');
         }
 
         if (!class_exists('Symfony\Component\Templating\PhpEngine')) {
-            $this->markTestSkipped('The "Templating" component is not available');
+            self::markTestSkipped('The "Templating" component is not available');
         }
-
-        parent::setUp();
     }
 
     protected function getExtensions()

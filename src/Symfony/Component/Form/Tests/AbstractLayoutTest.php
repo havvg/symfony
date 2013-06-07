@@ -19,12 +19,15 @@ abstract class AbstractLayoutTest extends \Symfony\Component\Form\Test\FormInteg
 {
     protected $csrfProvider;
 
-    protected function setUp()
+    public static function setUpBeforeClass()
     {
         if (!extension_loaded('intl')) {
-            $this->markTestSkipped('The "intl" extension is not available');
+            self::markTestSkipped('The "intl" extension is not available');
         }
+    }
 
+    protected function setUp()
+    {
         \Locale::setDefault('en');
 
         $this->csrfProvider = $this->getMock('Symfony\Component\Form\Extension\Csrf\CsrfProvider\CsrfProviderInterface');
