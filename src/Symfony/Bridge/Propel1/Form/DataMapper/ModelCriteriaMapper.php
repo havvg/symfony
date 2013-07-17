@@ -2,13 +2,11 @@
 
 namespace Symfony\Bridge\Propel1\Form\DataMapper;
 
-use Criteria;
-use ModelCriteria;
-
 use Symfony\Component\Form\DataMapperInterface;
 use Symfony\Component\Form\Exception\UnexpectedTypeException;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\Form\Util\PropertyPath;
+
+use Symfony\Component\PropertyAccess\PropertyPath;
 
 /**
  * A DataMapper mapping a ModelCriteria to a form type.
@@ -17,13 +15,13 @@ use Symfony\Component\Form\Util\PropertyPath;
  */
 class ModelCriteriaMapper implements DataMapperInterface
 {
-    public function mapDataToForms($data, array $forms)
+    public function mapDataToForms($data, $forms)
     {
         if (null === $data) {
             return;
         }
 
-        if (!$data instanceof ModelCriteria) {
+        if (!$data instanceof \ModelCriteria) {
             throw new UnexpectedTypeException($data, 'ModelCriteria');
         }
 
@@ -52,14 +50,13 @@ class ModelCriteriaMapper implements DataMapperInterface
                  * The camelize is "default" behavior, but the actual phpName may vary.
                  *
                  * @todo Implement discovery of actual phpName by checking all relations on this model.
-                 *       Remove self::camelize upon implementation.
                  */
                 $relationName = ucfirst(str_replace(" ", "", ucwords(strtr($path->getElement(0), "_-", "  "))));
                 if (!$data->getTableMap()->hasRelation($relationName)) {
                     continue;
                 }
 
-                $peer = $data->getTableMap()->getRelation($relationName)->getLocalTable()->getPeerClassname();
+                $peer = $data->getTableMap()->getRelation($relationName)->getForeignTable()->getPeerClassname();
                 $key = $relationName.'.'.$this->translateFieldname($peer, $path->getElement(1));
             } else {
                 $key = $this->translateFieldname($data->getModelPeerName(), $path->getElement(1));
@@ -88,20 +85,20 @@ class ModelCriteriaMapper implements DataMapperInterface
                  *
                  * @todo Implement data setter based on comparison defined in the Criterion.
                  */
-                case Criteria::EQUAL:
+                case \Criteria::EQUAL:
                 default:
                     $eachForm->setData($criterion->getValue());
             }
         }
     }
 
-    public function mapFormsToData(array $forms, &$data)
+    public function mapFormsToData($forms, &$data)
     {
         if (null === $data) {
             return;
         }
 
-        if (!$data instanceof ModelCriteria) {
+        if (!$data instanceof \ModelCriteria) {
             throw new UnexpectedTypeException($data, 'ModelCriteria');
         }
 
@@ -123,13 +120,13 @@ class ModelCriteriaMapper implements DataMapperInterface
      * In case the property-path contains more than one item, it's a dot-path notation of the related models.
      * The path will be traversed and the uses applied to the respective relation in the path.
      *
-     * @param FormInterface $form  The filter form containing the property path and the data.
-     * @param ModelCriteria $query The query object to join the property path onto.
-     * @param int           $index The index of the property path being traversed.
+     * @param FormInterface  $form  The filter form containing the property path and the data.
+     * @param \ModelCriteria $query The query object to join the property path onto.
+     * @param int            $index The index of the property path being traversed.
      *
      * @throws \RuntimeException If the relation path is invalid.
      */
-    protected function usePath(FormInterface $form, ModelCriteria $query, $index = 0)
+    protected function usePath(FormInterface $form, \ModelCriteria $query, $index = 0)
     {
         // The last property has been reached, which is the column.
         if ($index === $form->getPropertyPath()->getLength() - 1) {
@@ -150,10 +147,10 @@ class ModelCriteriaMapper implements DataMapperInterface
 
         $relation = $form->getPropertyPath()->getElement($index);
         if (!$query->getTableMap()->hasRelation($relation)) {
-            throw new \RuntimeException(sprintf('The relation between %s and %s does not exist.', $query->getModelName(), $relation));
+            throw new \RuntimeException(sprintf('The relation between "%s" and "%s" does not exist.', $query->getModelName(), $relation));
         }
 
-        /* @var $useQuery ModelCriteria */
+        /* @var $useQuery \ModelCriteria */
         $useQuery = $query->{'use'.$relation.'Query'}();
         $this->usePath($form, $useQuery, ++$index);
         $useQuery->endUse();
